@@ -1,7 +1,7 @@
 const token = localStorage.getItem("token");
 
 let selectedChatId=null;
-let socket=io();
+let socket = io(window.location.origin);
 
 let onlineUsers=[];
 let lastSeen={};
@@ -616,3 +616,4 @@ document.getElementById("body")
 .classList.toggle("dark");
 
 }
+
