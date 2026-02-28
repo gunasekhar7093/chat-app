@@ -1,28 +1,18 @@
-const token = localStorage.getItem("adminToken");
-
-if(!token){
-window.location="admin.html";
-}
-
+const API = window.location.origin;
 
 async function loadUsers(){
 
 const response = await fetch(
-"comuni-ofvk.onrender.com/api/admin/users",
-{
-headers:{
-Authorization:"Bearer "+token
-}
-});
+
+API + "/api/admin/users"
+
+);
 
 const users = await response.json();
 
 let html="";
 
 users.forEach(user=>{
-
-const date = new Date(user.createdAt)
-.toLocaleDateString();
 
 html+=`
 
@@ -32,12 +22,12 @@ html+=`
 
 <td>${user.email}</td>
 
-<td>${date}</td>
+<td>${new Date(user.createdAt)
+.toLocaleDateString()}</td>
 
 <td>
 
-<button class="deleteBtn"
-onclick="deleteUser('${user._id}')">
+<button onclick="deleteUser('${user._id}')">
 
 Delete
 
@@ -51,7 +41,8 @@ Delete
 
 });
 
-document.getElementById("usersTable").innerHTML=html;
+document.getElementById("usersTable")
+.innerHTML=html;
 
 }
 
@@ -61,27 +52,16 @@ loadUsers();
 
 async function deleteUser(id){
 
-if(!confirm("Delete this user?")) return;
-
 await fetch(
-"comuni-ofvk.onrender.com/api/admin/users/"+id,
+
+API + "/api/admin/users/"+id,
+
 {
-method:"DELETE",
-headers:{
-Authorization:"Bearer "+token
+method:"DELETE"
 }
-});
+
+);
 
 loadUsers();
-
-}
-
-
-
-function logout(){
-
-localStorage.removeItem("adminToken");
-
-window.location="admin.html";
 
 }
