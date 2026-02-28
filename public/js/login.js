@@ -1,10 +1,14 @@
+const API = window.location.origin;
+
 async function loginUser(){
 
 const email=document.getElementById("email").value;
 const password=document.getElementById("password").value;
 
 const response=await fetch(
-"http://localhost:5000/api/auth/login",
+
+API + "/api/auth/login",
+
 {
 method:"POST",
 
@@ -13,8 +17,10 @@ headers:{
 },
 
 body:JSON.stringify({
-email,
-password
+
+email:email,
+password:password
+
 })
 
 });
@@ -24,8 +30,6 @@ const data=await response.json();
 if(data.token){
 
 localStorage.setItem("token",data.token);
-
-alert("Login Successful");
 
 window.location="dashboard.html";
 
