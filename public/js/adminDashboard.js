@@ -1,18 +1,47 @@
 const API = window.location.origin;
 
+const token = localStorage.getItem("adminToken");
+
+if(!token){
+window.location="admin.html";
+}
+
+
+
+// Load Users
 async function loadUsers(){
 
 const response = await fetch(
 
-API + "/api/admin/users"
+API + "/api/admin/users",
 
-);
+{
+headers:{
+Authorization:"Bearer "+token
+}
+});
 
 const users = await response.json();
+
+if(!Array.isArray(users)){
+
+alert("Admin login expired");
+
+localStorage.removeItem("adminToken");
+
+window.location="admin.html";
+
+return;
+
+}
+
 
 let html="";
 
 users.forEach(user=>{
+
+const date=new Date(user.createdAt)
+.toLocaleDateString();
 
 html+=`
 
@@ -22,8 +51,7 @@ html+=`
 
 <td>${user.email}</td>
 
-<td>${new Date(user.createdAt)
-.toLocaleDateString()}</td>
+<td>${date}</td>
 
 <td>
 
@@ -41,8 +69,7 @@ Delete
 
 });
 
-document.getElementById("usersTable")
-.innerHTML=html;
+document.getElementById("usersTable").innerHTML=html;
 
 }
 
@@ -50,18 +77,34 @@ loadUsers();
 
 
 
+// Delete User
 async function deleteUser(id){
+
+if(!confirm("Delete user?")) return;
 
 await fetch(
 
 API + "/api/admin/users/"+id,
 
 {
-method:"DELETE"
-}
+method:"DELETE",
 
-);
+headers:{
+Authorization:"Bearer "+token
+}
+});
 
 loadUsers();
+
+}
+
+
+
+// Logout
+function logout(){
+
+localStorage.removeItem("adminToken");
+
+window.location="admin.html";
 
 }
