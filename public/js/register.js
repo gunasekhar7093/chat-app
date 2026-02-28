@@ -1,3 +1,5 @@
+const API = window.location.origin;
+
 async function registerUser(){
 
 const name=document.getElementById("name").value;
@@ -5,7 +7,9 @@ const email=document.getElementById("email").value;
 const password=document.getElementById("password").value;
 
 const response=await fetch(
-"http://localhost:5000/api/auth/register",
+
+API + "/api/auth/register",
+
 {
 method:"POST",
 
@@ -14,9 +18,11 @@ headers:{
 },
 
 body:JSON.stringify({
-name,
-email,
-password
+
+name:name,
+email:email,
+password:password
+
 })
 
 });
@@ -25,10 +31,6 @@ const data=await response.json();
 
 alert(data.message);
 
-if(data.token){
-
 window.location="login.html";
-
-}
 
 }
